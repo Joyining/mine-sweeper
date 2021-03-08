@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { SquareData } from "./Container";
+import FlagIcon from "./icon/FlagIcon";
 
 interface SquareProps {
   id: number;
@@ -9,6 +10,7 @@ interface SquareProps {
   isMine: boolean;
   numberOfAdjacentMine: number | undefined;
   isDigged: boolean | undefined;
+  isFlagged: boolean | undefined;
   handleSquareOnClick: (id: number) => void;
 }
 
@@ -26,13 +28,13 @@ const Wrap = styled.div<{
 `;
 
 function Square(props: SquareProps) {
-  console.log("render square");
   const {
     id,
     width,
     isMine,
     numberOfAdjacentMine,
     isDigged,
+    isFlagged,
     handleSquareOnClick
   } = props;
 
@@ -43,7 +45,8 @@ function Square(props: SquareProps) {
       onClick={() => handleSquareOnClick(id)}
     >
       {isMine ? "M" : ""}
-      {numberOfAdjacentMine}
+      {isDigged && numberOfAdjacentMine ? numberOfAdjacentMine : ""}
+      {isFlagged && <FlagIcon size={width * 0.6} />}
     </Wrap>
   );
 }
@@ -53,7 +56,8 @@ function areEqual(prevProps, nextProps) {
     prevProps.numberOfAdjacentMine !== 0 &&
     prevProps.numberOfAdjacentMine === nextProps.numberOfAdjacentMine &&
     prevProps.isMine === nextProps.isMine &&
-    prevProps.isDigged === nextProps.isDigged
+    prevProps.isDigged === nextProps.isDigged &&
+    prevProps.isFlagged === nextProps.isFlagged
   ) {
     return true;
   } else {
