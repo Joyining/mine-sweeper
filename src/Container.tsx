@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { GameConfig } from "./App";
-import Tile from "./Tile";
+import Square from "./Square";
 
 interface ContainerProps {
   level: GameConfig;
@@ -49,6 +49,7 @@ const Actions = styled.div<{
 `;
 
 export default function Container(props: ContainerProps) {
+  console.log("render container");
   const { level } = props;
   const { numberOfColumns, numberOfRows, numberOfMines } = level;
   const numberOfSquares = numberOfColumns * numberOfRows;
@@ -172,7 +173,7 @@ export default function Container(props: ContainerProps) {
       <Wrap>
         {squares.map((square: SquareData) => {
           return (
-            <Tile
+            <Square
               key={square.id}
               id={square.id}
               width={300 / numberOfColumns}

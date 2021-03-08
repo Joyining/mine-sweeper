@@ -1,8 +1,9 @@
+import React from "react";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { SquareData } from "./Container";
 
-interface TileProps {
+interface SquareProps {
   id: number;
   width: number;
   isMine: boolean;
@@ -24,7 +25,8 @@ const Wrap = styled.div<{
   flex-shrink: 0;
 `;
 
-export default function Tile(props: TileProps) {
+function Square(props: SquareProps) {
+  console.log("render square");
   const {
     id,
     width,
@@ -45,3 +47,18 @@ export default function Tile(props: TileProps) {
     </Wrap>
   );
 }
+
+function areEqual(prevProps, nextProps) {
+  if (
+    prevProps.numberOfAdjacentMine !== 0 &&
+    prevProps.numberOfAdjacentMine === nextProps.numberOfAdjacentMine &&
+    prevProps.isMine === nextProps.isMine &&
+    prevProps.isDigged === nextProps.isDigged
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+export default React.memo(Square, areEqual);
