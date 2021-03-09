@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { GameConfig } from "./App";
 import Square from "./Square";
+import { neighborChecker } from "../libs/neighborChecker";
 
 interface ContainerProps {
   level: GameConfig;
@@ -74,24 +75,6 @@ export default function Container(props: ContainerProps) {
   const selectedSquare = squares[selectedSquareId || -1];
   const [gameInitialized, setGameInitialized] = useState(false);
 
-  const neighborChecker = (neighborId: number, id: number) => {
-    let result =
-      neighborId >= 0 && neighborId <= numberOfSquares - 1 && neighborId !== id;
-    if (
-      neighborId % numberOfColumns === numberOfColumns - 1 &&
-      id % numberOfColumns === 0
-    ) {
-      result = false;
-    }
-    if (
-      neighborId % numberOfColumns === 0 &&
-      id % numberOfColumns === numberOfColumns - 1
-    ) {
-      result = false;
-    }
-    return result;
-  };
-
   const initializeGame = (firstClickedId: number) => {
     //  setup mines
     let mineIds: number[] = [];
@@ -107,7 +90,13 @@ export default function Container(props: ContainerProps) {
       for (let i = -1; i < 2; i++) {
         for (let j = -1; j < 2; j++) {
           const neighborId = id + numberOfColumns * i + j;
-          const isNeighbor = neighborChecker(neighborId, id);
+          const neighborCheckerInput = {
+            neighborId,
+            id,
+            numberOfColumns,
+            numberOfSquares
+          };
+          const isNeighbor = neighborChecker(neighborCheckerInput);
           if (isNeighbor && mineIds.indexOf(neighborId) !== -1) {
             result++;
           }
@@ -143,7 +132,13 @@ export default function Container(props: ContainerProps) {
       for (let i = -1; i < 2; i++) {
         for (let j = -1; j < 2; j++) {
           const neighborId = id + numberOfColumns * i + j;
-          const isNeighbor = neighborChecker(neighborId, id);
+          const neighborCheckerInput = {
+            neighborId,
+            id,
+            numberOfColumns,
+            numberOfSquares
+          };
+          const isNeighbor = neighborChecker(neighborCheckerInput);
           if (isNeighbor && squares[neighborId]?.isDigged === false) {
             dig(squares[neighborId]);
           }
@@ -155,10 +150,10 @@ export default function Container(props: ContainerProps) {
   const flag = (id: number) => {
     let newSquares = [...squares];
     if (remainingFlags > 0) {
-      setRemainingFlags((prevState) => prevState - 1);
+      setRemainingFlags((prevState: number) => prevState - 1);
       newSquares[id].isFlagged = true;
       if (newSquares[id].isMine === true) {
-        setRemainingMines((prevState) => prevState - 1);
+        setRemainingMines((prevState: number) => prevState - 1);
       }
     }
     setSquares(newSquares);
@@ -167,10 +162,10 @@ export default function Container(props: ContainerProps) {
 
   const unFlag = (id: number) => {
     let newSquares = [...squares];
-    setRemainingFlags((prevState) => prevState + 1);
+    setRemainingFlags((prevState: number) => prevState + 1);
     newSquares[id].isFlagged = false;
     if (newSquares[id].isMine === true) {
-      setRemainingMines((prevState) => prevState + 1);
+      setRemainingMines((prevState: number) => prevState + 1);
     }
     setSquares(newSquares);
     setSelectedSquareId(null);

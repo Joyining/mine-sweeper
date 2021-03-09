@@ -1,5 +1,5 @@
 import "./styles.css";
-import Container from "./Container";
+import Container from "./components/Container";
 
 export interface GameConfig {
   numberOfColumns: number;

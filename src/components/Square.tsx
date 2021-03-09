@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { SquareData } from "./Container";
-import FlagIcon from "./icon/FlagIcon";
+import FlagIcon from "../icons/FlagIcon";
 
 interface SquareProps {
   id: number;
