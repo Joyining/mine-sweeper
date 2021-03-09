@@ -183,6 +183,7 @@ export default function Container(props: ContainerProps) {
       dig(squareData);
     } else {
       if (!squareData.isDigged && selectedSquareId === null) {
+        // Todo: avoid user click another square before making any action.
         setSelectedSquareId(id);
         console.log(selectedSquareId);
       }
@@ -196,6 +197,7 @@ export default function Container(props: ContainerProps) {
         <p>{remainingMines === 0 ? "Congrats !!" : ""}</p>
         <p>{gameOver ? "Game Over !!" : ""}</p>
       </div>
+      {/* Todo: position Actions depends on current selected square. */}
       <Actions selectedSquareId={selectedSquareId}>
         {!selectedSquare?.isFlagged && (
           <p className="flag" onClick={() => flag(selectedSquareId as number)}>

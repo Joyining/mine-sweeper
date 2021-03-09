@@ -65,7 +65,8 @@ function areEqual(prevProps: SquareData, nextProps: SquareData) {
     prevProps.numberOfAdjacentMine === nextProps.numberOfAdjacentMine &&
     prevProps.isMine === nextProps.isMine &&
     prevProps.isDigged === nextProps.isDigged &&
-    prevProps.isFlagged === nextProps.isFlagged
+    prevProps.isFlagged === nextProps.isFlagged &&
+    prevProps.isSelected === nextProps.isSelected
   ) {
     return true;
   } else {
