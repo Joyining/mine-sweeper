@@ -26,5 +26,5 @@ const levels = {
 };
 
 export default function App() {
-  return <Container level={levels.medium} />;
+  return <Container level={levels.easy} />;
 }

@@ -13,6 +13,7 @@ export interface SquareData {
   numberOfAdjacentMine?: number | undefined;
   isDigged?: boolean;
   isFlagged: boolean;
+  isSelected: boolean;
 }
 
 const Wrap = styled.div`
@@ -37,6 +38,9 @@ const Actions = styled.div<{
     &.flag {
       background-color: Crimson;
     }
+    &.un-flag {
+      background-color: DarkSlateGray;
+    }
     &.dig {
       background-color: ForestGreen;
     }
@@ -51,7 +55,9 @@ export default function Container(props: ContainerProps) {
   const { numberOfColumns, numberOfRows, numberOfMines } = level;
   const numberOfSquares = numberOfColumns * numberOfRows;
   const [remainingFlags, setRemainingFlags] = useState(numberOfMines);
+  const [remainingMines, setRemainingMines] = useState(numberOfMines);
   const [selectedSquareId, setSelectedSquareId] = useState<number | null>(null);
+  const [gameOver, setGameOver] = useState(false);
 
   let unInitialzedSquares = [];
   for (let i = 0; i < numberOfSquares; i++) {
@@ -60,10 +66,12 @@ export default function Container(props: ContainerProps) {
       isMine: false,
       numberOfAdjacentMine: 0,
       isDigged: false,
-      isFlagged: false
+      isFlagged: false,
+      isSelected: false
     });
   }
   const [squares, setSquares] = useState(unInitialzedSquares);
+  const selectedSquare = squares[selectedSquareId || -1];
   const [gameInitialized, setGameInitialized] = useState(false);
 
   const neighborChecker = (neighborId: number, id: number) => {
@@ -127,7 +135,7 @@ export default function Container(props: ContainerProps) {
     setSquares(newSquares);
     setSelectedSquareId(null);
     if (isMine) {
-      console.log("GAME OVER !!!!");
+      setGameOver(true);
       return;
     }
 
@@ -147,18 +155,23 @@ export default function Container(props: ContainerProps) {
   const flag = (id: number) => {
     let newSquares = [...squares];
     if (remainingFlags > 0) {
-      setRemainingFlags(
-        newSquares[id].isFlagged
-          ? (prevState) => prevState + 1
-          : (prevState) => prevState - 1
-      );
-      newSquares[id].isFlagged = newSquares[id].isFlagged ? false : true;
-    } else if (remainingFlags === 0 && newSquares[id].isFlagged) {
-      // can only unflag
-      newSquares[id].isFlagged = false;
-      setRemainingFlags(1);
+      setRemainingFlags((prevState) => prevState - 1);
+      newSquares[id].isFlagged = true;
+      if (newSquares[id].isMine === true) {
+        setRemainingMines((prevState) => prevState - 1);
+      }
     }
+    setSquares(newSquares);
+    setSelectedSquareId(null);
+  };
 
+  const unFlag = (id: number) => {
+    let newSquares = [...squares];
+    setRemainingFlags((prevState) => prevState + 1);
+    newSquares[id].isFlagged = false;
+    if (newSquares[id].isMine === true) {
+      setRemainingMines((prevState) => prevState + 1);
+    }
     setSquares(newSquares);
     setSelectedSquareId(null);
   };
@@ -169,8 +182,9 @@ export default function Container(props: ContainerProps) {
       initializeGame(id);
       dig(squareData);
     } else {
-      if (!squareData.isDigged) {
+      if (!squareData.isDigged && selectedSquareId === null) {
         setSelectedSquareId(id);
+        console.log(selectedSquareId);
       }
     }
   };
@@ -178,12 +192,24 @@ export default function Container(props: ContainerProps) {
   return (
     <>
       <div>
-        <span>Remaining Flags: {remainingFlags}</span>
+        <p>Remaining Flags: {remainingFlags}</p>
+        <p>{remainingMines === 0 ? "Congrats !!" : ""}</p>
+        <p>{gameOver ? "Game Over !!" : ""}</p>
       </div>
       <Actions selectedSquareId={selectedSquareId}>
-        <p className="flag" onClick={() => flag(selectedSquareId as number)}>
-          Flag/ Unflag
-        </p>
+        {!selectedSquare?.isFlagged && (
+          <p className="flag" onClick={() => flag(selectedSquareId as number)}>
+            Flag
+          </p>
+        )}
+        {selectedSquare?.isFlagged && (
+          <p
+            className="un-flag"
+            onClick={() => unFlag(selectedSquareId as number)}
+          >
+            Unflag
+          </p>
+        )}
         <p
           className="dig"
           onClick={() => dig(squares[selectedSquareId as number])}
@@ -205,6 +231,7 @@ export default function Container(props: ContainerProps) {
               numberOfAdjacentMine={square.numberOfAdjacentMine}
               isDigged={square.isDigged}
               isFlagged={square.isFlagged}
+              isSelected={selectedSquareId === square.id}
               handleSquareOnClick={handleSquareOnClick}
             />
           );

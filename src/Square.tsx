@@ -11,20 +11,24 @@ interface SquareProps {
   numberOfAdjacentMine: number | undefined;
   isDigged: boolean | undefined;
   isFlagged: boolean | undefined;
+  isSelected: boolean;
   handleSquareOnClick: (id: number) => void;
 }
 
 const Wrap = styled.div<{
   width: number;
-  isDigged?: boolean;
+  showGreyBackground?: boolean;
+  isSelected?: boolean;
 }>`
   width: ${(props) => `${props.width}px`};
   height: ${(props) => `${props.width}px`};
   background-color: ${(props) =>
-    props.isDigged ? "DarkGrey" : "DarkSeaGreen"};
-  border: 1px solid green;
+    props.showGreyBackground ? "DarkGrey" : "DarkSeaGreen"};
+  border: 1px solid ${(props) => (props.isSelected ? "GoldenRod" : "Green")};
   box-sizing: border-box;
   flex-shrink: 0;
+  text-align: center;
+  line-height: ${(props) => `${props.width}px`};
 `;
 
 function Square(props: SquareProps) {
@@ -35,23 +39,27 @@ function Square(props: SquareProps) {
     numberOfAdjacentMine,
     isDigged,
     isFlagged,
+    isSelected,
     handleSquareOnClick
   } = props;
 
   return (
     <Wrap
       width={width}
-      isDigged={isDigged}
+      isSelected={isSelected}
+      showGreyBackground={isDigged && !isFlagged}
       onClick={() => handleSquareOnClick(id)}
     >
       {isMine ? "M" : ""}
-      {isDigged && numberOfAdjacentMine ? numberOfAdjacentMine : ""}
+      {isDigged && !isFlagged && numberOfAdjacentMine
+        ? numberOfAdjacentMine
+        : ""}
       {isFlagged && <FlagIcon size={width * 0.6} />}
     </Wrap>
   );
 }
 
-function areEqual(prevProps, nextProps) {
+function areEqual(prevProps: SquareData, nextProps: SquareData) {
   if (
     prevProps.numberOfAdjacentMine !== 0 &&
     prevProps.numberOfAdjacentMine === nextProps.numberOfAdjacentMine &&
