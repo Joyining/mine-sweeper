@@ -1,7 +1,7 @@
 # mine-sweeper
 Created with CodeSandbox
 
-**Demo link**
+**Demo Link**
 https://codesandbox.io/s/zealous-platform-vs2zj?file=/src/components/Square.tsx
 
 **Built With**
