@@ -2,7 +2,7 @@
 Created with CodeSandbox
 
 **Demo Link**
-https://codesandbox.io/s/zealous-platform-vs2zj?file=/src/components/Square.tsx
+https://codesandbox.io/s/mine-sweeper-vs2zj
 
 **Built With**
 * [react 17.0.1](https://www.npmjs.com/package/react)
