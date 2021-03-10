@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { useEffect, useState } from "react";
 import { SquareData } from "./Container";
 import FlagIcon from "../icons/FlagIcon";
 
@@ -50,8 +49,8 @@ function Square(props: SquareProps) {
       showGreyBackground={isDigged && !isFlagged}
       onClick={() => handleSquareOnClick(id)}
     >
-      {isMine ? "M" : ""}
-      {isDigged && !isFlagged && numberOfAdjacentMine
+      {isMine && isDigged ? "X" : ""}
+      {isDigged && !isFlagged && !isMine && numberOfAdjacentMine
         ? numberOfAdjacentMine
         : ""}
       {isFlagged && <FlagIcon size={width * 0.6} />}

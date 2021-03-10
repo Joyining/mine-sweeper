@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { useEffect, useState } from "react";
-import { GameConfig } from "./App";
+import { useState } from "react";
+import { GameConfig } from "../App";
 import Square from "./Square";
 import { neighborChecker } from "../libs/neighborChecker";
 
@@ -123,8 +123,16 @@ export default function Container(props: ContainerProps) {
     newSquares[id].isDigged = true;
     setSquares(newSquares);
     setSelectedSquareId(null);
-    if (isMine) {
+    if (isMine && !gameOver) {
       setGameOver(true);
+      setTimeout(() => {
+        squares.forEach((square) => {
+          if (square.isMine) {
+            dig(square);
+          }
+        });
+      }, 500);
+
       return;
     }
 
